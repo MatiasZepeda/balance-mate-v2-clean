@@ -8,14 +8,16 @@ window.WheelRenderer = class WheelRenderer {
         this.cx = 250;
         this.cy = 250;
         this.r = 230;
+        this.segments = []; // Track segment elements for focus management
     }
 
     // Draw the wheel with given emotion data
     draw(data) {
         console.log('🎨 Drawing wheel with data:', data);
 
-        // Clear existing content
+        // Clear existing content and segment references
         this.svg.innerHTML = '';
+        this.segments = [];
 
         const angle = 360 / data.length;
         const rotationOffset = (data.length === 2) ? -90 : 0;
@@ -53,8 +55,25 @@ window.WheelRenderer = class WheelRenderer {
         seg.setAttribute('d', pathData);
         seg.setAttribute('fill', item.color);
         seg.setAttribute('class', 'segment');
+
+        // Keyboard accessibility
+        seg.setAttribute('tabindex', '0');
+        seg.setAttribute('role', 'button');
+        seg.setAttribute('aria-label', `Select ${item.name} emotion`);
+
+        // Click handler
         seg.onclick = () => this.onSegmentClick(index, item);
+
+        // Keyboard handler (Enter or Space)
+        seg.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.onSegmentClick(index, item);
+            }
+        };
+
         this.svg.appendChild(seg);
+        this.segments.push(seg); // Track for focus management
     }
 
     // Create text label for segment
@@ -100,5 +119,12 @@ window.WheelRenderer = class WheelRenderer {
     // Reset rotation
     resetRotation() {
         this.svg.style.transform = 'rotate(0deg)';
+    }
+
+    // Focus first segment for keyboard navigation
+    focusFirstSegment() {
+        if (this.segments.length > 0) {
+            this.segments[0].focus();
+        }
     }
 }

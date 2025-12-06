@@ -25,6 +25,11 @@ window.SummaryScreen = class SummaryScreen {
 
         // Show notes area
         document.getElementById('notesArea').classList.add('visible');
+
+        // Focus textarea for keyboard users
+        setTimeout(() => {
+            document.getElementById('noteInput').focus();
+        }, 100);
     }
 
     // Get empathetic message for emotion path
@@ -42,14 +47,80 @@ window.SummaryScreen = class SummaryScreen {
 
     // Save entry and reset
     save() {
-        const note = document.getElementById('noteInput').value;
+        const noteInput = document.getElementById('noteInput');
+        const note = noteInput.value;
         const path = window.state.getState().emotionPath;
         const emotionPathText = path.join(' → ');
 
-        // Show confirmation
-        alert(`✅ Recorded:\n\n${emotionPathText}\n\n${note || 'No notes'}`);
+        // Check if voice recorder was used (has finalTranscript)
+        const voiceTranscript = window.voiceRecorder && window.voiceRecorder.finalTranscript
+            ? window.voiceRecorder.finalTranscript.trim()
+            : null;
 
-        // Reload to reset
-        location.reload();
+        try {
+            // Initialize storage if not exists
+            if (!window.emotionStorage) {
+                window.emotionStorage = new window.EmotionStorage();
+            }
+
+            // Save to localStorage
+            const entry = window.emotionStorage.saveEntry(path, note, voiceTranscript);
+
+            // Show success message
+            this.showSuccessMessage(emotionPathText);
+
+            // Reset app after brief delay
+            setTimeout(() => {
+                this.resetApp();
+            }, 1500);
+
+        } catch (error) {
+            console.error('Failed to save entry:', error);
+            alert('Failed to save entry. Please try again.');
+        }
+    }
+
+    // Show success message
+    showSuccessMessage(emotionPathText) {
+        const heading = document.getElementById('heading');
+        const originalText = heading.textContent;
+
+        heading.textContent = '✓ Entry saved';
+        heading.style.color = '#22c55e';
+
+        console.log(`✅ Saved: ${emotionPathText}`);
+    }
+
+    // Reset app to initial state
+    resetApp() {
+        // Hide notes area
+        document.getElementById('notesArea').classList.remove('visible');
+
+        // Clear notes
+        document.getElementById('noteInput').value = '';
+
+        // Reset voice recorder if exists
+        if (window.voiceRecorder) {
+            window.voiceRecorder.finalTranscript = '';
+        }
+
+        // Reset state
+        window.state.reset();
+
+        // Reset UI
+        document.getElementById('heading').textContent = 'How are you feeling right now?';
+        document.getElementById('heading').style.color = '';
+        document.getElementById('levelInfo').textContent = 'Level 1: Primary Emotion';
+        document.getElementById('backBtn').classList.remove('visible');
+        document.getElementById('instruction').style.opacity = '1';
+        document.querySelector('.wheel-container').style.opacity = '1';
+
+        // Redraw Level 1 wheel
+        if (window.wheelRenderer && window.emotions) {
+            window.wheelRenderer.draw(window.emotions[1]);
+            window.wheelRenderer.resetRotation();
+        }
+
+        console.log('🔄 App reset to Level 1');
     }
 }

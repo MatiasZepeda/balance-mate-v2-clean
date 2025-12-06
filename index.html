@@ -12,10 +12,10 @@
         <h1 id="heading">How are you feeling right now?</h1>
 
         <div class="wheel-container">
-            <button class="back-button" id="backBtn">← Back</button>
-            <div class="level-info" id="levelInfo">Level 1: Primary Emotion</div>
+            <button class="back-button" id="backBtn" aria-label="Go back to previous level">← Back</button>
+            <div class="level-info" id="levelInfo" role="status" aria-live="polite">Level 1: Primary Emotion</div>
             <svg class="wheel-svg" id="wheelSvg" viewBox="0 0 500 500"></svg>
-            <div class="pointer"></div>
+            <div class="pointer" aria-hidden="true"></div>
         </div>
 
         <div class="notes-area" id="notesArea">
@@ -24,10 +24,11 @@
                 You selected: <strong id="pathText"></strong>
             </div>
             <br>
+            <label for="noteInput" class="visually-hidden">Notes about what triggered this emotion</label>
             <div class="textarea-wrapper">
-                <textarea id="noteInput" placeholder="What triggered this emotion? (optional)"></textarea>
+                <textarea id="noteInput" placeholder="What triggered this emotion? (optional)" aria-describedby="empatheticMessage"></textarea>
                 <button class="mic-button" id="micButton" aria-label="Voice input">
-                    <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
                         <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
                         <line x1="12" y1="19" x2="12" y2="23"></line>
@@ -46,6 +47,7 @@
     <script src="js/config/emotions.js"></script>
     <script src="js/config/messages.js"></script>
     <script src="js/core/state-manager.js"></script>
+    <script src="js/core/storage.js"></script>
     <script src="js/features/wheel-renderer.js"></script>
     <script src="js/features/voice-recorder.js"></script>
     <script src="js/features/summary-screen.js"></script>

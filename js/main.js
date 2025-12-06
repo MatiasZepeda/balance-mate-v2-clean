@@ -98,6 +98,8 @@ function advance() {
         if (data.length > 0) {
             drawCurrentLevel();
             wheelRenderer.resetRotation();
+            // Focus first segment for keyboard navigation
+            setTimeout(() => wheelRenderer.focusFirstSegment(), 100);
         } else {
             showSummary();
         }
@@ -110,6 +112,8 @@ function advance() {
         if (data.length > 0) {
             drawCurrentLevel();
             wheelRenderer.resetRotation();
+            // Focus first segment for keyboard navigation
+            setTimeout(() => wheelRenderer.focusFirstSegment(), 100);
         } else {
             showSummary();
         }
@@ -149,6 +153,9 @@ function setupBackButton() {
         drawCurrentLevel();
         const rotation = currentState.wheelRotation;
         document.getElementById('wheelSvg').style.transform = `rotate(${rotation}deg)`;
+
+        // Focus first segment for keyboard navigation
+        setTimeout(() => wheelRenderer.focusFirstSegment(), 100);
     };
 }
 
