@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balance Mate V2 - Emotion Wheel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 id="heading">How are you feeling right now?</h1>
+
+        <div class="wheel-container">
+            <button class="back-button" id="backBtn">← Back</button>
+            <div class="level-info" id="levelInfo">Level 1: Primary Emotion</div>
+            <svg class="wheel-svg" id="wheelSvg" viewBox="0 0 500 500"></svg>
+            <div class="pointer"></div>
+        </div>
+
+        <div class="notes-area" id="notesArea">
+            <p class="empathetic-message" id="empatheticMessage"></p>
+            <div class="badge">
+                You selected: <strong id="pathText"></strong>
+            </div>
+            <br>
+            <div class="textarea-wrapper">
+                <textarea id="noteInput" placeholder="What triggered this emotion? (optional)"></textarea>
+                <button class="mic-button" id="micButton" aria-label="Voice input">
+                    <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                        <line x1="8" y1="23" x2="16" y2="23"></line>
+                    </svg>
+                </button>
+            </div>
+            <br>
+            <button class="save" id="saveBtn">Done</button>
+        </div>
+
+        <p class="instruction" id="instruction">Tap an emotion to begin</p>
+    </div>
+
+    <!-- JavaScript Modules -->
+    <script src="js/config/emotions.js"></script>
+    <script src="js/config/messages.js"></script>
+    <script src="js/core/state-manager.js"></script>
+    <script src="js/features/wheel-renderer.js"></script>
+    <script src="js/features/voice-recorder.js"></script>
+    <script src="js/features/summary-screen.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
