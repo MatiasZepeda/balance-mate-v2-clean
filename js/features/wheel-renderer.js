@@ -62,7 +62,10 @@ window.WheelRenderer = class WheelRenderer {
         seg.setAttribute('aria-label', `Select ${item.name} emotion`);
 
         // Click handler
-        seg.onclick = () => this.onSegmentClick(index, item);
+        seg.onclick = (e) => {
+            e.currentTarget.blur(); // Remove focus outline after click
+            this.onSegmentClick(index, item);
+        };
 
         // Keyboard handler (Enter or Space)
         seg.onkeydown = (e) => {
