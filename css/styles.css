@@ -130,7 +130,7 @@ button:focus, textarea:focus {
 
 /* Notes Area */
 .notes-area {
-    margin-top: 30px;
+    margin-top: 10px;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s;
