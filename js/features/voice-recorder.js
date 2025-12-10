@@ -8,6 +8,7 @@ window.VoiceRecorder = class VoiceRecorder {
         this.recognition = null;
         this.isListening = false;
         this.finalTranscript = '';
+        this.startingText = '';
         this.silenceTimer = null;
 
         this.initialize();
@@ -27,6 +28,7 @@ window.VoiceRecorder = class VoiceRecorder {
         this.recognition.continuous = true;
         this.recognition.interimResults = true;
         this.recognition.lang = 'en-US';
+        this.recognition.maxAlternatives = 1;
 
         this.setupEventHandlers();
         this.setupMicButton();
@@ -55,23 +57,20 @@ window.VoiceRecorder = class VoiceRecorder {
     // Handle speech recognition results
     handleResult(event) {
         this.resetSilenceTimer();
-        let interimTranscript = '';
 
+        // Process only final transcripts for cleaner, more accurate results
+        // Interim results are still captured by the API for better recognition quality
         for (let i = event.resultIndex; i < event.results.length; i++) {
-            const transcript = event.results[i][0].transcript;
             if (event.results[i].isFinal) {
-                this.finalTranscript += transcript + ' ';
-            } else {
-                interimTranscript += transcript;
-            }
-        }
+                const transcript = event.results[i][0].transcript.trim();
+                if (transcript) {
+                    this.finalTranscript += transcript + ' ';
 
-        // Update textarea with interim results in brackets
-        const existingText = this.noteInput.value.replace(/\[.*?\]$/, '').trim();
-        if (interimTranscript) {
-            this.noteInput.value = existingText + (existingText ? ' ' : '') + this.finalTranscript + '[' + interimTranscript + ']';
-        } else {
-            this.noteInput.value = existingText + (existingText ? ' ' : '') + this.finalTranscript;
+                    // Update display immediately with final text only
+                    const displayText = this.startingText + (this.startingText ? ' ' : '') + this.finalTranscript.trim();
+                    this.noteInput.value = displayText;
+                }
+            }
         }
     }
 
@@ -110,6 +109,7 @@ window.VoiceRecorder = class VoiceRecorder {
         try {
             this.isListening = true;
             this.finalTranscript = '';
+            this.startingText = this.noteInput.value.trim();
             this.micButton.classList.add('listening');
             this.recognition.start();
             this.resetSilenceTimer();
@@ -128,10 +128,14 @@ window.VoiceRecorder = class VoiceRecorder {
             this.recognition.stop();
         } catch (err) {}
 
-        // Clean up interim results and finalize text
-        const existingText = this.noteInput.value.replace(/\[.*?\]$/, '').trim();
-        this.noteInput.value = existingText + (existingText && this.finalTranscript ? ' ' : '') + this.finalTranscript.trim();
+        // Finalize text - ensure clean output with no artifacts
+        if (this.finalTranscript.trim()) {
+            const finalText = this.startingText + (this.startingText ? ' ' : '') + this.finalTranscript.trim();
+            this.noteInput.value = finalText;
+        }
+
         this.finalTranscript = '';
+        this.startingText = '';
     }
 
     // Reset silence timer (auto-stop after 3s of silence)
