@@ -44,14 +44,14 @@ h1 {
     width: 100%;
     height: 100%;
     transform-origin: center;
-    transition: transform 1s ease-out;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .segment {
     cursor: pointer;
     stroke: white;
     stroke-width: 3;
-    transition: opacity 0.2s;
+    transition: opacity 0.15s;
 }
 
 .segment:hover {
@@ -120,7 +120,7 @@ button:focus, textarea:focus {
     font-size: 14px;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s;
+    transition: opacity 0.2s;
 }
 
 .back-button.visible {
@@ -133,7 +133,7 @@ button:focus, textarea:focus {
     margin-top: 10px;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s;
+    transition: opacity 0.25s;
 }
 
 .notes-area.visible {

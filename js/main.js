@@ -61,8 +61,11 @@ function handleSegmentClick(index, item) {
     const currentData = getCurrentData();
     const rotation = wheelRenderer.rotateTo(index, currentData.length);
 
-    // After animation completes
-    setTimeout(() => {
+    // After animation completes - use transitionend for perfect synchronization
+    const svg = document.getElementById('wheelSvg');
+    const onTransitionEnd = () => {
+        svg.removeEventListener('transitionend', onTransitionEnd);
+
         // Save current state to history
         state.saveToHistory();
 
@@ -74,7 +77,8 @@ function handleSegmentClick(index, item) {
 
         // Release animation lock
         state.setAnimating(false);
-    }, 1000);
+    };
+    svg.addEventListener('transitionend', onTransitionEnd);
 }
 
 // Get current level data
@@ -108,7 +112,7 @@ function advance() {
             drawCurrentLevel();
             wheelRenderer.resetRotation();
             // Focus first segment for keyboard navigation
-            setTimeout(() => wheelRenderer.focusFirstSegment(), 100);
+            requestAnimationFrame(() => wheelRenderer.focusFirstSegment());
         } else {
             showSummary();
         }
@@ -122,7 +126,7 @@ function advance() {
             drawCurrentLevel();
             wheelRenderer.resetRotation();
             // Focus first segment for keyboard navigation
-            setTimeout(() => wheelRenderer.focusFirstSegment(), 100);
+            requestAnimationFrame(() => wheelRenderer.focusFirstSegment());
         } else {
             showSummary();
         }
@@ -164,7 +168,7 @@ function setupBackButton() {
         document.getElementById('wheelSvg').style.transform = `rotate(${rotation}deg)`;
 
         // Focus first segment for keyboard navigation
-        setTimeout(() => wheelRenderer.focusFirstSegment(), 100);
+        requestAnimationFrame(() => wheelRenderer.focusFirstSegment());
     };
 }
 

@@ -26,10 +26,10 @@ window.SummaryScreen = class SummaryScreen {
         // Show notes area
         document.getElementById('notesArea').classList.add('visible');
 
-        // Focus textarea for keyboard users
-        setTimeout(() => {
+        // Focus textarea for keyboard users - instant with requestAnimationFrame
+        requestAnimationFrame(() => {
             document.getElementById('noteInput').focus();
-        }, 100);
+        });
     }
 
     // Get empathetic message for emotion path
@@ -79,7 +79,7 @@ window.SummaryScreen = class SummaryScreen {
             // Reset app after brief delay
             setTimeout(() => {
                 this.resetApp();
-            }, 1500);
+            }, 600);
 
         } catch (error) {
             console.error('Failed to save entry:', error);
