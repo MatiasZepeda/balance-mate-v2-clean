@@ -18,6 +18,7 @@ function initApp() {
     // Initialize wheel renderer
     const svg = document.getElementById('wheelSvg');
     wheelRenderer = new window.WheelRenderer(svg, handleSegmentClick);
+    window.wheelRenderer = wheelRenderer; // Make accessible globally for reset
 
     // Check if empathetic messages are loaded
     if (!window.empatheticMessages) {
