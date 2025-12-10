@@ -19,6 +19,14 @@ function initApp() {
     const svg = document.getElementById('wheelSvg');
     wheelRenderer = new window.WheelRenderer(svg, handleSegmentClick);
 
+    // Check if empathetic messages are loaded
+    if (!window.empatheticMessages) {
+        console.error('❌ window.empatheticMessages is not defined!');
+        console.log('Available window properties:', Object.keys(window).filter(k => k.includes('empath') || k.includes('message')));
+    } else {
+        console.log('✅ Empathetic messages loaded:', Object.keys(window.empatheticMessages).length, 'messages');
+    }
+
     // Initialize summary screen
     summaryScreen = new window.SummaryScreen(window.empatheticMessages);
 

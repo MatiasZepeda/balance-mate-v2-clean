@@ -36,12 +36,19 @@ window.SummaryScreen = class SummaryScreen {
     getMessage(emotionPath) {
         const key = emotionPath.join(' → ');
 
+        // Check if messages object exists
+        if (!this.messages) {
+            console.warn('⚠️ Empathetic messages not loaded');
+            return 'Thank you for sharing how you feel.';
+        }
+
         // Exact match
         if (this.messages[key]) {
             return this.messages[key];
         }
 
         // Fallback: default message
+        console.warn(`⚠️ No message found for: ${key}`);
         return 'Thank you for sharing how you feel.';
     }
 
