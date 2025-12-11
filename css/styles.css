@@ -20,6 +20,7 @@ body {
 .container {
     max-width: 900px;
     width: 100%;
+    margin: 0 auto;
     text-align: center;
 }
 
@@ -787,8 +788,8 @@ button.save {
     min-height: 100vh;
     padding: 20px;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: flex-start;
     transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
