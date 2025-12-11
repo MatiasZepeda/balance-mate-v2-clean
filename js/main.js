@@ -6,6 +6,17 @@ let state;
 let wheelRenderer;
 let voiceRecorder;
 let summaryScreen;
+let navigationManager;
+let router;
+let emotionStorage;
+
+// Tab modules
+let mainTab;
+let calendarTab; // Will be created by other agents
+let streakTab;
+let storyTab;
+let feedbackTab;
+let exportTab;
 
 // Initialize application
 function initApp() {
@@ -45,7 +56,38 @@ function initApp() {
     // Draw initial wheel (Level 1)
     drawCurrentLevel();
 
-    console.log('✅ App initialized');
+    // Initialize emotion storage FIRST (needed by other modules)
+    emotionStorage = new window.EmotionStorage();
+    window.emotionStorage = emotionStorage;
+
+    // Initialize navigation system
+    navigationManager = new window.NavigationManager();
+    window.navigationManager = navigationManager;
+
+    // Initialize router
+    router = new window.Router(navigationManager);
+    window.router = router;
+
+    // Initialize tab modules
+    mainTab = new window.MainTab();
+    calendarTab = new window.CalendarTab(emotionStorage);
+    streakTab = new window.StreakTab(emotionStorage);
+    storyTab = new window.StoryTab(emotionStorage);
+    feedbackTab = new window.FeedbackTab();
+    exportTab = new window.ExportTab(emotionStorage);
+
+    // Register tab modules with navigation manager
+    navigationManager.registerTabModule('main', mainTab);
+    navigationManager.registerTabModule('calendar', calendarTab);
+    navigationManager.registerTabModule('streak', streakTab);
+    navigationManager.registerTabModule('story', storyTab);
+    navigationManager.registerTabModule('feedback', feedbackTab);
+    navigationManager.registerTabModule('export', exportTab);
+
+    // Initialize navigation (must be called after DOM is ready and tabs exist)
+    navigationManager.initialize();
+
+    console.log('✅ App initialized with all 6 tabs');
 }
 
 // Handle segment click
