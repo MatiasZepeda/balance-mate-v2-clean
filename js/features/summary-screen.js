@@ -14,9 +14,9 @@ window.SummaryScreen = class SummaryScreen {
         console.log('📝 Final path:', emotionPathText);
         console.log('💬 Empathetic message:', message);
 
-        // Hide wheel and instruction
-        document.querySelector('.wheel-container').style.opacity = '0';
-        document.getElementById('instruction').style.opacity = '0';
+        // Hide wheel and instruction (use display none so they don't take up space)
+        document.querySelector('.wheel-container').style.display = 'none';
+        document.getElementById('instruction').style.display = 'none';
 
         // Update summary screen content
         document.getElementById('heading').textContent = 'Tell us more';
@@ -26,15 +26,21 @@ window.SummaryScreen = class SummaryScreen {
         // Show notes area
         document.getElementById('notesArea').classList.add('visible');
 
-        // Focus textarea for keyboard users
-        setTimeout(() => {
+        // Focus textarea for keyboard users - instant with requestAnimationFrame
+        requestAnimationFrame(() => {
             document.getElementById('noteInput').focus();
-        }, 100);
+        });
     }
 
     // Get empathetic message for emotion path
     getMessage(emotionPath) {
         const key = emotionPath.join(' → ');
+
+        // Check if messages object exists
+        if (!this.messages) {
+            console.warn('⚠️ Empathetic messages not loaded');
+            return 'Thank you for sharing how you feel.';
+        }
 
         // Exact match
         if (this.messages[key]) {
@@ -42,6 +48,7 @@ window.SummaryScreen = class SummaryScreen {
         }
 
         // Fallback: default message
+        console.warn(`⚠️ No message found for: ${key}`);
         return 'Thank you for sharing how you feel.';
     }
 
@@ -72,7 +79,7 @@ window.SummaryScreen = class SummaryScreen {
             // Reset app after brief delay
             setTimeout(() => {
                 this.resetApp();
-            }, 1500);
+            }, 600);
 
         } catch (error) {
             console.error('Failed to save entry:', error);
@@ -112,8 +119,8 @@ window.SummaryScreen = class SummaryScreen {
         document.getElementById('heading').style.color = '';
         document.getElementById('levelInfo').textContent = 'Level 1: Primary Emotion';
         document.getElementById('backBtn').classList.remove('visible');
-        document.getElementById('instruction').style.opacity = '1';
-        document.querySelector('.wheel-container').style.opacity = '1';
+        document.getElementById('instruction').style.display = 'block';
+        document.querySelector('.wheel-container').style.display = 'block';
 
         // Redraw Level 1 wheel
         if (window.wheelRenderer && window.emotions) {

@@ -18,6 +18,15 @@ function initApp() {
     // Initialize wheel renderer
     const svg = document.getElementById('wheelSvg');
     wheelRenderer = new window.WheelRenderer(svg, handleSegmentClick);
+    window.wheelRenderer = wheelRenderer; // Make accessible globally for reset
+
+    // Check if empathetic messages are loaded
+    if (!window.empatheticMessages) {
+        console.error('❌ window.empatheticMessages is not defined!');
+        console.log('Available window properties:', Object.keys(window).filter(k => k.includes('empath') || k.includes('message')));
+    } else {
+        console.log('✅ Empathetic messages loaded:', Object.keys(window.empatheticMessages).length, 'messages');
+    }
 
     // Initialize summary screen
     summaryScreen = new window.SummaryScreen(window.empatheticMessages);
@@ -52,8 +61,11 @@ function handleSegmentClick(index, item) {
     const currentData = getCurrentData();
     const rotation = wheelRenderer.rotateTo(index, currentData.length);
 
-    // After animation completes
-    setTimeout(() => {
+    // After animation completes - use transitionend for perfect synchronization
+    const svg = document.getElementById('wheelSvg');
+    const onTransitionEnd = () => {
+        svg.removeEventListener('transitionend', onTransitionEnd);
+
         // Save current state to history
         state.saveToHistory();
 
@@ -65,7 +77,8 @@ function handleSegmentClick(index, item) {
 
         // Release animation lock
         state.setAnimating(false);
-    }, 1000);
+    };
+    svg.addEventListener('transitionend', onTransitionEnd);
 }
 
 // Get current level data
@@ -99,7 +112,7 @@ function advance() {
             drawCurrentLevel();
             wheelRenderer.resetRotation();
             // Focus first segment for keyboard navigation
-            setTimeout(() => wheelRenderer.focusFirstSegment(), 100);
+            requestAnimationFrame(() => wheelRenderer.focusFirstSegment());
         } else {
             showSummary();
         }
@@ -113,7 +126,7 @@ function advance() {
             drawCurrentLevel();
             wheelRenderer.resetRotation();
             // Focus first segment for keyboard navigation
-            setTimeout(() => wheelRenderer.focusFirstSegment(), 100);
+            requestAnimationFrame(() => wheelRenderer.focusFirstSegment());
         } else {
             showSummary();
         }
@@ -155,7 +168,7 @@ function setupBackButton() {
         document.getElementById('wheelSvg').style.transform = `rotate(${rotation}deg)`;
 
         // Focus first segment for keyboard navigation
-        setTimeout(() => wheelRenderer.focusFirstSegment(), 100);
+        requestAnimationFrame(() => wheelRenderer.focusFirstSegment());
     };
 }
 
